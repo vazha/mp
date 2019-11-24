@@ -1,0 +1,55 @@
+.map2 {
+    width: 900px
+}
+
+.map{
+    background:url("map.jpg") no-repeat center center;
+    //background-size:150%;
+    background-position-x: 197px;
+    width:900px;
+    height:600px;
+}
+
+#app3{
+    margin-left: 50px;
+}
+
+#btn_left {
+    color: brown;
+    background-color: cornsilk;
+    width:40px;
+    margin: 2px;
+    position: absolute;
+    top: 60px;
+}
+
+#btn_right {
+    color: brown;
+    width:40px;
+    background-color: cornsilk;
+    margin: 2px;
+    position: absolute;
+    top: 90px;
+}
+
+#btn_up {
+    color: brown;
+    background-color: cornsilk;
+    width:40px;
+    margin: 2px;
+    position: absolute;
+    top: 0px;
+}
+
+#btn_down {
+    color: brown;
+    background-color: cornsilk;
+    width:40px;
+    margin: 2px;
+    position: absolute;
+    top: 30px;
+}
+
+.bot {
+    src:url("bot.png") no-repeat;
+}
