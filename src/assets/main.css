@@ -3,9 +3,8 @@
 }
 
 .map{
-    background:url("map.jpg") no-repeat center center;
-    //background-size:150%;
-    background-position-x: 197px;
+    background:url("ice.png") no-repeat center center;
+    //background-position-x: 197px;
     width:900px;
     height:600px;
 }

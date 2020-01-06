@@ -1,6 +1,7 @@
 <template>
    <div id="prog">
     <input v-on:input="handleInput" v-bind:value="valuez" type="text">
+    <span>{{name}}</span>
   </div>
 </template>
 
@@ -18,7 +19,7 @@ export default {
   },
   methods:{
     handleInput(e){
-      this.$emit("nameChange", e.target.value)
+      this.$emit("nameChange", "kuku") // e.target.value
     }
   }
 }
