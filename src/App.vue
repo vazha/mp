@@ -1,6 +1,6 @@
 <template>
    <div id="app3">
-      <div @mouseover="mouseOverMap($el, $event)" v-on:mousewheel.capture="scrollFunction($event)" v-bind:style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
+      <div @dragover.prevent @mouseover="mouseOverMap($el, $event)" v-on:mousewheel.capture="scrollFunction($event)" v-bind:style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
         <div class="arrows" id="btn_left" @click="move('left')" @click.stop>Left</div>
         <div class="arrows" id="btn_right" @click="move('right')" @click.stop>Right</div>
         <div class="arrows" id="btn_up" @click="move('up')" @click.stop>Up</div>
@@ -8,7 +8,7 @@
 
         <img :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * 0.01 * scale + left +'px', top: bot[1] * 0.01 * scale + top + 'px', width: scale * 0.01 * 20 + 'px'}">
 
-        <img :title="obj[0]" :src="'http://combats.fun/img/map/'+obj[1]"  v-for="obj in objects" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: obj[2] * 0.01 * scale + left +'px', top: obj[3] * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
+        <img draggable="true" @dragstart="dragStart($el, $event)" @dragover.prevent @dragend="drop(id, $event)" :title="obj.name" :src="domain + 'img/map/object/'+obj.file" @click="edit_map_obj(id)" v-for="(obj, id) in map_objects_data" v-bind:style="{zIndex: obj_zIndex, cursor: 'pointer', position:'absolute',display:'inline-block',left: obj.x * 0.01 * scale + left +'px', top: obj.y * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
 
 
         <div v-for="(map_object, i) in map_objects" v-bind:key="i" class="egit_cells_row" v-bind:style="{left: left +'px', top: i * edit_box_size + top +'px', position:'absolute'}">
@@ -17,7 +17,7 @@
           </div>  
         </div>
 
-        <img :src="domain + 'img/map/object/'+temp_image_src" v-if="editor_mode == 2" v-bind:style="{position:'relative', left: temp_image_left+'px', top: temp_image_top+'px', width: scale * 0.01 +'%'}">
+        <img :src="domain + 'img/map/object/'+temp_image_src" v-if="editor_mode == 2 && obj_mode == 1" v-bind:style="{position:'relative', left: temp_image_left+'px', top: temp_image_top+'px', width: scale * 0.01 +'%'}">
 
       </div>
 
@@ -41,7 +41,7 @@
         </select>
       </div>
 
-      <Objects @editor_object_changed="editor_object_changed" v-bind:domain = "domain" v-if="editor_mode == 2"></Objects>
+      <Objects @save_on_map="save_on_map" @editor_object_changed="editor_object_changed" @delete_from_map="delete_from_map" v-bind:domain = "domain" v-bind:obj = "obj" @obj_mode_changed = "obj_mode = $event" v-if="editor_mode == 2"></Objects>
 
       <p>
         <a href="#" @click="clear_map()">Clear map</a>  
@@ -50,8 +50,7 @@
     </div>
 
     <p v-if="false">edit_box_size:{{edit_box_size}}  map_width:{{map_width}} map_height:{{map_height}}</p>
-
-    
+    <span v-if="false">map_objects_data: {{map_objects_data}}</span>
   </div>
 </template>
 
@@ -66,11 +65,15 @@ import axios from 'axios';
 export default {
   data () {
     return {
+      t_offset_left: 0,
+      t_offset_top: 0,
       temp_image_src: "",
       temp_image_left: 0,
       temp_image_top: 0,
       editor_mode: "", // 1 - контурыб 2 - картинки
+      obj_mode: 0, // 1 - добавление, 2 - редактирование
       domain: "http://combats.fun/",
+      obj: {}, // объект прокидываемый на редактирование в map_objects.vue
       imag: imag,
       gm: gm1,
       pause_map: 0,
@@ -80,8 +83,9 @@ export default {
       backgrounds:["", "blue", "red", "#45ef45", "#a26f5c"],
       bots:[[100,200,2342343,"Зорро", 342342342],[200,300,1233234,"Admin", 43534534]],
       //bots:[[]],
-      objects:[], // массив объектов на карте
+      objects:[], // массив контуров на карте
       map_objects:[[1,2,3], []],
+      map_objects_data:"", // массив картинок на карте
       f:5,
       pname:"vaja",
       value:"",
@@ -99,30 +103,66 @@ export default {
     this.timer2 = setInterval(this.fetchObjebts, 5000)    
 
 
-   var img = new Image();
-   var self = this;
-   img.onload = function() {
-      self.map_width = this.width;
-      self.map_height = this.height;
-      var cols = (self.map_width / self.cell_width_init).toFixed(0) // total numbet of edit columns
-      self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
-   };
+    var img = new Image();
+    var self = this;
+    img.onload = function() {
+        self.map_width = this.width;
+        self.map_height = this.height;
+        var cols = (self.map_width / self.cell_width_init).toFixed(0) // total numbet of edit columns
+        self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
+    };
 
-   img.onerror = function() {
-       alert( "not a valid file: " + file.type);
-   };
+    img.onerror = function() {
+        alert( "not a valid file: " + file.type);
+    };
 
-   img.src = gm1
+    img.src = gm1
   },
   computed:{
     edit_box_size: function () {
       var cw = ((0.01 * this.scale) * this.cell_width).toFixed(0) // width of transparent cell in Edit mode
       return cw
+    },
+    obj_zIndex: function () {
+      var zIndex = 0
+      if (this.pause_map && this.editor_mode == 2){
+        zIndex = 10
+      }
+      return zIndex
     }
   },
   methods:{
+    save_on_map(id,obj){
+      this.obj = {}
+    },
+    dragStart(el, ev) {
+      ev.dataTransfer.setData('Text', 1);
+      ev.dataTransfer.dropEffect = 'move'
+      //this.dragging = which;
+      //console.log(which)
+      this.t_offset_left = el.offsetLeft
+      this.t_offset_top = el.offsetTop
+    },
+    drop(id, event){
+      //console.log(event.screenX)
+      console.log(event)
+      //this.map_objects_data[id].x = (event.clientX  / (this.scale * 0.01) ) - this.left
+      //this.map_objects_data[id].y = (event.screenY - this.t_offset_top) // (this.scale * 0.01)
+    },
+    delete_from_map(id){
+      delete(this.map_objects_data[id])
+      this.obj = {}
+      this.$forceUpdate()
+    },
+    edit_map_obj(id){
+      this.obj = this.map_objects_data[id]
+      this.obj["id"] = id // additional param for handle
+      //alert(map_objects_data)
+    },
     editor_object_changed(el){
-      this.temp_image_src = el 
+      this.temp_image_src = el[1]
+      this.temp_image_id = el[2]
+      this.temp_image_name = el[0]
     },
     mouseOverMap(el, event){
       this.temp_image_left = event.clientX - el.offsetLeft + 5 // +5 чтобы не клинила мышка на картинке
@@ -158,6 +198,13 @@ export default {
             // this.$forceUpdate()
             }
           );
+        axios.get("http://combats.fun/map_objects.php?map_objects_data=1")
+          .then(
+            response => {
+              this.map_objects_data = response.data
+            // this.$forceUpdate()
+            }
+          );          
       }
 
       this.bots.forEach(function(item, i, bots) {
@@ -169,13 +216,18 @@ export default {
     },
     set(el, event){
       //alert(event.clientX - el.offsetLeft)
-      const cell_x = ((event.clientX - el.offsetLeft - this.left) / (0.01 * this.scale) / this.cell_width).toFixed(0)
-      const cell_y = ((event.clientY - el.offsetTop - this.top) / (0.01 * this.scale) / this.cell_width).toFixed(0)
+      //const cell_x = ((event.clientX - el.offsetLeft - this.left) / (0.01 * this.scale) / this.cell_width).toFixed(0)
+      //const cell_y = ((event.clientY - el.offsetTop - this.top) / (0.01 * this.scale) / this.cell_width).toFixed(0)
 
+      const temp_x = ((event.clientX - el.offsetLeft - this.left) / (0.01 * this.scale)).toFixed(0)
+      const temp_y = ((event.clientY - el.offsetTop - this.top) / (0.01 * this.scale)).toFixed(0)
+      
       if(this.pause_map){
-        if (this.editor_mode == 2) { // редактирование картинок
-          alert(event.clientX - el.offsetLeft - this.left)
-          //this.objects = this.objects.push([])
+        if (this.editor_mode == 2 && this.obj_mode == 1) { // редактирование картинок
+          //alert(event.clientX - el.offsetLeft - this.left)
+          var n = Object.keys(this.map_objects_data).length + 1
+          this.map_objects_data[n] = {"file": this.temp_image_src, "x": this.temp_image_left, "y": this.temp_image_top, "name": this.temp_image_name, "type": this.temp_image_id , "active":"1"}
+          this.$forceUpdate()
         }
       }
 
@@ -259,6 +311,7 @@ export default {
 <style scoped>
 .map {
   font-size: 0;
+  overflow: hidden;
 }
 
 .arrows {

@@ -19,3 +19,5 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 
 
 <img :src="px1" v-bind:style="{width: edit_box_size+'px', height: edit_box_size+'px'}">{{map_obj}}
+https://codepen.io/axetrodome/pen/GRgWvbj  - drag and drop
+https://www.w3schools.com/html/html5_draganddrop.asp  - drag and drop
