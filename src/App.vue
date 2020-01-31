@@ -1,6 +1,6 @@
 <template>
    <div id="app3">
-      <div @dragover.prevent @mouseover="mouseOverMap($el, $event)" v-on:mousewheel.capture="scrollFunction($event)" v-bind:style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
+      <div @dragover.prevent @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
         <div class="arrows" id="btn_left" @click="move('left')" @click.stop>Left</div>
         <div class="arrows" id="btn_right" @click="move('right')" @click.stop>Right</div>
         <div class="arrows" id="btn_up" @click="move('up')" @click.stop>Up</div>
@@ -45,12 +45,13 @@
 
       <p>
         <a href="#" @click="clear_map()">Clear map</a>  
-        <a href="#" @click="save_map()">Save map</a> 
+        <a href="#" @click="save_map(editor_mode)">Save map</a> 
       </p>
     </div>
 
-    <p v-if="false">edit_box_size:{{edit_box_size}}  map_width:{{map_width}} map_height:{{map_height}}</p>
+    <p v-if="true">edit_box_size:{{edit_box_size}}, scale: {{scale}}, cells_count_x:{{cells_count_x}}, cells_count_y:{{cells_count_y}} edit_box_size:{{edit_box_size}} , map_width:{{map_width}} map_height:{{map_height}}</p>
     <span v-if="false">map_objects_data: {{map_objects_data}}</span>
+    
   </div>
 </template>
 
@@ -59,6 +60,7 @@ import Prg from './Progress.vue';
 import Objects from './components/map_objects.vue';
 import imag from './assets/bot.png';
 import gm1 from './assets/ice.png';
+import gm2 from './assets/map2.jpg';
 import px1 from './assets/1px.png';
 import axios from 'axios';
 
@@ -84,23 +86,25 @@ export default {
       bots:[[100,200,2342343,"Зорро", 342342342],[200,300,1233234,"Admin", 43534534]],
       //bots:[[]],
       objects:[], // массив контуров на карте
-      map_objects:[[1,2,3], []],
-      map_objects_data:"", // массив картинок на карте
+      map_objects:[],
+      map_objects_data:[], // массив картинок на карте
       f:5,
       pname:"vaja",
       value:"",
-      scale:100,
+      scale:500, // 100 было
       left:0,
       top:0,
       cell_width: 25,
       cell_width_init: 25,
+      cells_count_x: 0,
+      cells_count_y: 0,
     }
   },
   mounted:function(){
     this.fetchBots();
-    this.fetchObjebts();
-    this.timer = setInterval(this.fetchBots, 3000)
-    this.timer2 = setInterval(this.fetchObjebts, 5000)    
+    //this.fetchObjebts();
+    this.timer = setInterval(this.fetchBots, 30000)
+    //this.timer2 = setInterval(this.fetchObjebts, 10000)    
 
 
     var img = new Image();
@@ -109,14 +113,26 @@ export default {
         self.map_width = this.width;
         self.map_height = this.height;
         var cols = (self.map_width / self.cell_width_init).toFixed(0) // total numbet of edit columns
+        self.cells_count_x = cols
+        var rows = (self.map_height / self.cell_width_init).toFixed(0) // total numbet of edit columns
+        self.cells_count_y = rows
         self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
+        var x = 0
+        var y = 0 
+        for (x = 0; x < self.cells_count_x; x++ ){
+          var t = []
+          for (y = 0; y < self.cells_count_y; y++ ){
+            t.push(1)
+          }
+          self.map_objects.push(t)
+        }
     };
 
     img.onerror = function() {
         alert( "not a valid file: " + file.type);
     };
 
-    img.src = gm1
+    img.src = gm2
   },
   computed:{
     edit_box_size: function () {
@@ -173,6 +189,8 @@ export default {
         if (this.editor_mode == 1) { // редактирование контуров
           this.map_objects[x][y] = this.map_item_to_set
         }
+      }else{
+        console.log(x +" ",y)
       }
       this.$forceUpdate()
     },
@@ -223,11 +241,21 @@ export default {
       const temp_y = ((event.clientY - el.offsetTop - this.top) / (0.01 * this.scale)).toFixed(0)
       
       if(this.pause_map){
-        if (this.editor_mode == 2 && this.obj_mode == 1) { // редактирование картинок
+        if (this.editor_mode == 2 && this.obj_mode == 1) { // редактирование картинок (добавление)
           //alert(event.clientX - el.offsetLeft - this.left)
-          var n = Object.keys(this.map_objects_data).length + 1
+
+      var n = 0
+      Object.keys(this.map_objects_data).forEach(function(key,index) {
+        if(key != n && n != 0){
+         return
+        }
+        n = parseInt(key) + 1
+      });
+
+          //var n = Object.keys(this.map_objects_data).length + 1
           this.map_objects_data[n] = {"file": this.temp_image_src, "x": this.temp_image_left, "y": this.temp_image_top, "name": this.temp_image_name, "type": this.temp_image_id , "active":"1"}
           this.$forceUpdate()
+          //console.log(this.map_objects_data)
         }
       }
 
@@ -277,21 +305,29 @@ export default {
         }
       }
     },
-    save_map(){
+    save_map(mode){
+      if (mode == 0){
+          alert("Выберите что сохраняем!")
+          return
+      }
+
+      
       var data = JSON.stringify(
         {
-          "map_objects": this.map_objects
+          "map_objects": mode == 1 ? this.map_objects : this.map_objects_data
+          //"map_objects": this.map_objects
         }
       )
 
       var axiosConfig = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            //'Access-Control-Allow-Origin':'*'
+           //'Access-Control-Allow-Origin':'*'
         }
       };
 
-      axios.post('http://combats.fun/map_objects.php', data, axiosConfig)
+      axios.post('http://combats.fun/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333"), data, axiosConfig)
+      //axios.post('http://combats.fun/map_objects.php', data, axiosConfig)
       .then((response) => {
         console.log(response);
       })
