@@ -6,13 +6,13 @@
         <div class="arrows" id="btn_up" @click="move('up')" @click.stop>Up</div>
         <div class="arrows" id="btn_down" @click="move('down')" @click.stop>Down</div>
 
-        <img :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * 0.01 * scale + left +'px', top: bot[1] * 0.01 * scale + top + 'px', width: scale * 0.01 * 20 + 'px'}">
+        <img :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px'}">
 
         <img draggable="true" @dragstart="dragStart($el, $event)" @dragover.prevent @dragend="drop(id, $event)" :title="obj.name" :src="domain + 'img/map/object/'+obj.file" @click="edit_map_obj(id)" v-for="(obj, id) in map_objects_data" v-bind:style="{zIndex: obj_zIndex, cursor: 'pointer', position:'absolute',display:'inline-block',left: obj.x * 0.01 * scale + left +'px', top: obj.y * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
 
 
         <div v-for="(map_object, i) in map_objects" v-bind:key="i" class="egit_cells_row" v-bind:style="{left: left +'px', top: i * edit_box_size + top +'px', position:'absolute'}">
-          <div v-for="(map_obj, ii) in map_object" v-bind:key="ii" @click="set_map_cell(i, ii)" :class="'edit_cell'+editor_mode" v-bind:style="{width: edit_box_size+'px', height: edit_box_size+'px', background: backgrounds[map_obj] }">
+          <div v-for="(map_obj, ii) in map_object" v-bind:key="ii" @click="set_map_cell(i, ii)" :class="'edit_cell'+editor_mode" v-bind:style="{width: edit_box_size+'px', height: edit_box_size+'px', background: (pause_map == 0  ? '' : backgrounds[map_obj])  }">
             
           </div>  
         </div>
@@ -21,23 +21,23 @@
 
       </div>
 
-    <label for="stop_updating_map">Режим редактирования:</label>
+    <label for="stop_updating_map">Editor mode:</label>
     <input type="checkbox" name="stop_updating_map" v-model="pause_map">
 
     <div v-if=pause_map>
       <input type="radio" id="one" value="1" v-model="editor_mode">
-      <label for="one">Контуры</label>
+      <label for="one">Shapes</label>
       <input type="radio" id="two" value="2" v-model="editor_mode">
-      <label for="two">Картинки</label>
+      <label for="two">Pictures</label>
 
       <div v-if="editor_mode == 1">
-        <span>Объект:</span>
+        <span>Object:</span>
         <select v-model="map_item_to_set">
-          <option value="0">Пусто</option>
-          <option value="1">Вода</option>
-          <option value="2">Гора</option>
-          <option value="3">Дерево</option>
-          <option value="4">Строение</option>
+          <option value="0">Empty</option>
+          <option value="1">Water</option>
+          <option value="2">Mounnt</option>
+          <option value="3">Tree</option>
+          <option value="4">Building</option>
         </select>
       </div>
 
@@ -83,8 +83,8 @@ export default {
       map_height: 0,
       map_item_to_set: 0,
       backgrounds:["", "blue", "red", "#45ef45", "#a26f5c"],
-      bots:[[100,200,2342343,"Зорро", 342342342],[200,300,1233234,"Admin", 43534534]],
-      //bots:[[]],
+      //bots:[[100,200,2342343,"Зорро", 342342342],[200,300,1233234,"Admin", 43534534]],
+      bots:[],
       objects:[], // массив контуров на карте
       map_objects:[],
       map_objects_data:[], // массив картинок на карте
@@ -102,8 +102,8 @@ export default {
   },
   mounted:function(){
     this.fetchBots();
-    //this.fetchObjebts();
-    this.timer = setInterval(this.fetchBots, 30000)
+    this.fetchObjebts();
+    this.timer = setInterval(this.fetchBots, 3000)
     //this.timer2 = setInterval(this.fetchObjebts, 10000)    
 
 
@@ -119,10 +119,10 @@ export default {
         self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
         var x = 0
         var y = 0 
-        for (x = 0; x < self.cells_count_x; x++ ){
+        for (y = 0; y < self.cells_count_y; y++ ){
           var t = []
-          for (y = 0; y < self.cells_count_y; y++ ){
-            t.push(1)
+          for (x = 0; x < self.cells_count_x; x++ ){
+            t.push(0)
           }
           self.map_objects.push(t)
         }
@@ -132,7 +132,7 @@ export default {
         alert( "not a valid file: " + file.type);
     };
 
-    img.src = gm2
+    img.src = gm1
   },
   computed:{
     edit_box_size: function () {
@@ -190,7 +190,32 @@ export default {
           this.map_objects[x][y] = this.map_item_to_set
         }
       }else{
+        var ddd = document.cookie
+        console.log("cookie ", ddd)
         console.log(x +" ",y)
+
+        var data = JSON.stringify(
+          {
+            "room": 555,
+            "goto_x": x,
+            "goto_y": y
+          }
+        )
+
+        var axiosConfig = {
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            //'Access-Control-Allow-Origin':'*'
+          }
+        };
+
+        axios.post('http://combats.fun/map2.php', data, axiosConfig)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       }
       this.$forceUpdate()
     },
@@ -198,7 +223,7 @@ export default {
       axios.get("http://combats.fun/map.php")
         .then(
           response => {
-            //this.bots = response.data
+            this.bots = response.data
           }
         );
       this.bots.forEach(function(item, i, bots) {

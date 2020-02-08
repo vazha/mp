@@ -1,12 +1,12 @@
 <template>
 <div>
     <input type="radio" id="one" value="1" v-model="obj_mode">
-    <label for="one">Добавить объект</label>
+    <label for="one">Add object</label>
     <input type="radio" id="two" value="2" v-model="obj_mode">
-    <label for="two">Редактировать</label>    
+    <label for="two">Edit object</label>    
     
     <div v-if="obj_mode == 1">
-        <span>Добавить объект на карту:</span>
+        <span>Add new object to map:</span>
         <select v-model="active_object" v-on:change="object_selected(objects[active_object])"> 
             <option value="0" >Выбрать объект</option>
             <option v-for="o in objects" :value="o[2]" >{{ o[0] }}</option>
