@@ -1,10 +1,6 @@
 <template>
    <div id="app3">
       <div draggable="true" @dragstart="drag_map_start($el, $event)" @dragover.prevent @dragend="drag_map_stop( $event)" @dragenter="dragenter($el,$event)"  @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
-        <div class="arrows" id="btn_left" @click="move('left')" @click.stop>Left</div>
-        <div class="arrows" id="btn_right" @click="move('right')" @click.stop>Right</div>
-        <div class="arrows" id="btn_up" @click="move('up')" @click.stop>Up</div>
-        <div class="arrows" id="btn_down" @click="move('down')" @click.stop>Down</div>
 
         <img :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px'}">
 
@@ -91,7 +87,7 @@ export default {
       f:5,
       pname:"vaja",
       value:"",
-      scale:500, // 100 было
+      scale:100, // 500 было
       left:0,
       top:0,
       cell_width: 25,
@@ -330,6 +326,9 @@ export default {
     scrollFunction (event) {
       event.preventDefault()
       this.scale += 0.1 * event.wheelDelta
+      if ( this.scale < 100){
+         this.scale = 100
+      }
       //console.log(this.scale)
     },
     clear_map(){
