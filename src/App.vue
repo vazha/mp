@@ -346,6 +346,10 @@ export default {
       if ( this.scale < 100){
          this.scale = 100
       }
+
+      if ( this.scale > 500){
+         this.scale = 500
+      }
       //console.log(this.scale)
     },
     clear_map(){
