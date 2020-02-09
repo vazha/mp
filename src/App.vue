@@ -1,6 +1,6 @@
 <template>
    <div id="app3">
-      <div draggable="true" @dragstart="drag_map_start($el, $event)" @dragover.prevent @dragend="drag_map_stop( $event)" @dragenter="dragenter($el,$event)"  @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
+      <div draggable="true" @dragstart="drag_map_start($el, $event)" @dragover.prevent @dragend="drag_map_stop( $event)" @dragenter="dragenter($el,$event)"  @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px', width: div_width + 'px', height: div_height  + 'px'}" id="map" @click="set($el, $event)" class="map">
 
         <img :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px'}">
 
@@ -63,6 +63,8 @@ import axios from 'axios';
 export default {
   data () {
     return {
+      div_width: 900,
+      div_height: 600,
       t_offset_left: 0,
       t_offset_top: 0,
       temp_image_src: "",
@@ -114,7 +116,7 @@ export default {
         self.cells_count_x = cols
         var rows = (self.map_height / self.cell_width_init).toFixed(0) // total numbet of edit columns
         self.cells_count_y = rows
-        self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
+        self.cell_width = (self.div_width / cols).toFixed(0) // 900 is a div width
         var x = 0
         var y = 0 
         for (y = 0; y < self.cells_count_y; y++ ){
@@ -134,7 +136,7 @@ export default {
         self.cells_count_x = cols
         var rows = (self.map_height / self.cell_width_init).toFixed(0) // total numbet of edit columns
         self.cells_count_y = rows
-        self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
+        self.cell_width = (self.div_width / cols).toFixed(0) // 900 is a div width
         var x = 0
         var y = 0
         for (y = 0; y < self.cells_count_y; y++ ){
@@ -175,10 +177,26 @@ export default {
       this.drag_y = obj.screenY
     },
     drag_map_stop(obj){
-      //console.log("drag stop")
-      //this.left -= 50 
       this.left -= (this.drag_x - event.screenX)
       this.top -= (this.drag_y - event.screenY)
+
+      var tl = this.div_width * this.scale * 0.01 + this.left
+      if ( (this.div_width * this.scale * 0.01 + this.left) < this.div_width){
+        this.left += (this.div_width - tl)
+      }
+
+      if (this.left > 0) {
+        this.left = 0
+      }
+
+      var tt = this.div_height * this.scale * 0.01 + this.top
+      if ( (this.div_height * this.scale * 0.01 + this.top) < this.div_height){
+        this.top += (this.div_height - tt)
+      }
+
+      if (this.top > 0) {
+        this.top = 0
+      }
     },
     save_on_map(id,obj){
       this.obj = {}
@@ -350,12 +368,36 @@ export default {
       if ( this.scale > 500){
          this.scale = 500
       }
-      //console.log(this.scale)
+
+      var tlx = (this.div_width * this.scale * 0.01 - this.div_width) / 2
+      this.left = -tlx
+
+      var tly = (this.div_height * this.scale * 0.01 - this.div_height) / 2
+      this.top = -tly
+
+      var tl = this.div_width * this.scale * 0.01 + this.left
+      if ( (this.div_width * this.scale * 0.01 + this.left) < this.div_width){
+        this.left += (this.div_width - tl)
+      }
+
+      if (this.left > 0) {
+        this.left = 0
+      }
+
+      var tt = this.div_height * this.scale * 0.01 + this.top
+      if ( (this.div_height * this.scale * 0.01 + this.top) < this.div_height){
+        this.top += (this.div_height - tt)
+      }
+
+      if (this.top > 0) {
+        this.top = 0
+      }
+
     },
     clear_map(){
       var rows = (this.map_height / this.cell_width_init).toFixed(0) // total numbet of edit rows
       var cols = (this.map_width / this.cell_width_init).toFixed(0) // total numbet of edit columns
-      this.cell_width = (900 / cols).toFixed(0) // 900 is a div width
+      this.cell_width = (this.div_width / cols).toFixed(0) // 900 is a div width
       
       var y
       //console.log("rows:"+rows)
