@@ -127,7 +127,24 @@ export default {
     };
 
     img.onerror = function() {
-        alert( "not a valid file: " + file.type);
+        //alert( "not a valid file: " + file.type);
+        self.map_width = 1704;
+        self.map_height = 1027;
+        var cols = (self.map_width / self.cell_width_init).toFixed(0) // total numbet of edit columns
+        self.cells_count_x = cols
+        var rows = (self.map_height / self.cell_width_init).toFixed(0) // total numbet of edit columns
+        self.cells_count_y = rows
+        self.cell_width = (900 / cols).toFixed(0) // 900 is a div width
+        var x = 0
+        var y = 0
+        for (y = 0; y < self.cells_count_y; y++ ){
+          var t = []
+          for (x = 0; x < self.cells_count_x; x++ ){
+            t.push(0)
+          }
+          self.map_objects.push(t)
+        }
+        console.log("image problem");
     };
 
     img.src = gm1
