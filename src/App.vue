@@ -1,6 +1,6 @@
 <template>
    <div id="app3">
-      <div @dragover.prevent @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
+      <div draggable="true" @dragstart="drag_map_start($el, $event)" @dragover.prevent @dragend="drag_map_stop( $event)" @dragenter="dragenter($el,$event)"  @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px' }" id="map" @click="set($el, $event)" class="map">
         <div class="arrows" id="btn_left" @click="move('left')" @click.stop>Left</div>
         <div class="arrows" id="btn_right" @click="move('right')" @click.stop>Right</div>
         <div class="arrows" id="btn_up" @click="move('up')" @click.stop>Up</div>
@@ -98,12 +98,14 @@ export default {
       cell_width_init: 25,
       cells_count_x: 0,
       cells_count_y: 0,
+      drag_x: 0,
+      drag_y: 0,
     }
   },
   mounted:function(){
     this.fetchBots();
     this.fetchObjebts();
-    this.timer = setInterval(this.fetchBots, 3000)
+    this.timer = setInterval(this.fetchBots, 1000)
     //this.timer2 = setInterval(this.fetchObjebts, 10000)    
 
 
@@ -148,6 +150,23 @@ export default {
     }
   },
   methods:{
+    dragenter(el, event){
+      //console.log(event)
+      //this.left -= (this.drag_x - event.screenX)
+    },
+    drag_map_start(id,obj){
+      //console.log(obj)
+      //console.log("sss")
+      //this.left += 50 
+      this.drag_x = obj.screenX
+      this.drag_y = obj.screenY
+    },
+    drag_map_stop(obj){
+      //console.log("drag stop")
+      //this.left -= 50 
+      this.left -= (this.drag_x - event.screenX)
+      this.top -= (this.drag_y - event.screenY)
+    },
     save_on_map(id,obj){
       this.obj = {}
     },
@@ -181,6 +200,7 @@ export default {
       this.temp_image_name = el[0]
     },
     mouseOverMap(el, event){
+      //console.log(event.clientX)
       this.temp_image_left = event.clientX - el.offsetLeft + 5 // +5 чтобы не клинила мышка на картинке
       this.temp_image_top = event.clientY - el.offsetTop + 5 // +5 чтобы не клинила мышка на картинке
     },
