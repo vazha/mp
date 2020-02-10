@@ -279,15 +279,13 @@ export default {
         );
       this.bots.forEach(function(item, i, bots) {
         //alert( "o" + bots[i][0]);
-
       });
     },
     fetchObjebts(){
       if (!this.pause_map){
-        axios.get("http://combats.fun/map_objects.php")
+        axios.get("http://combats.fun/map3.php")
           .then(
             response => {
-              //this.objects = response.data
               this.map_objects = response.data
             // this.$forceUpdate()
             }
