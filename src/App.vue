@@ -55,7 +55,7 @@
 import Prg from './Progress.vue';
 import Objects from './components/map_objects.vue';
 import imag from './assets/bot.png';
-import gm1 from './assets/ice.png';
+import gm1 from './assets/4_2000.png';
 import gm2 from './assets/map2.jpg';
 import px1 from './assets/1px.png';
 import axios from 'axios';
@@ -130,8 +130,8 @@ export default {
 
     img.onerror = function() {
         //alert( "not a valid file: " + file.type);
-        self.map_width = 1704;
-        self.map_height = 1027;
+        self.map_width = 2000;
+        self.map_height = 2000;
         var cols = (self.map_width / self.cell_width_init).toFixed(0) // total numbet of edit columns
         self.cells_count_x = cols
         var rows = (self.map_height / self.cell_width_init).toFixed(0) // total numbet of edit columns
