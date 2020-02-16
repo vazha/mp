@@ -287,6 +287,9 @@ export default {
         .then(
           response => {
             this.bots = response.data
+            if (response.data[len(response.data)-1] == "Attack"){
+                alert("Attack")
+            }
           }
         );
       this.bots.forEach(function(item, i, bots) {
