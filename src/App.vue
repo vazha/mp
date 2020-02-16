@@ -8,7 +8,7 @@
 
 
         <div v-for="(map_object, i) in map_objects" v-bind:key="i" class="egit_cells_row" v-bind:style="{left: left +'px', top: i * edit_box_size + top +'px', position:'absolute'}">
-          <div v-for="(map_obj, ii) in map_object" v-bind:key="ii" @click="set_map_cell(i, ii)" :class="'edit_cell'+editor_mode" v-bind:style="{width: edit_box_size+'px', height: edit_box_size+'px', background: (pause_map == 0  ? '' : backgrounds[map_obj])  }">
+          <div v-for="(map_obj, ii) in map_object" v-bind:key="ii" @click="set_map_cell(i, ii, 2, 0)" :class="'edit_cell'+editor_mode" v-bind:style="{width: edit_box_size+'px', height: edit_box_size+'px', background: (pause_map == 0  ? '' : backgrounds[map_obj])  }">
             
           </div>  
         </div>
@@ -173,7 +173,7 @@ export default {
   methods:{
     al(bot){
       //alert(bot[1])
-      this.set_map_cell(bot[0], bot[1])
+      this.set_map_cell(bot[0], bot[1], 1, bot[2])
     },
     dragenter(el, event){
       //console.log(event)
@@ -247,7 +247,7 @@ export default {
       this.temp_image_left = event.clientX - el.offsetLeft + 5 // +5 чтобы не клинила мышка на картинке
       this.temp_image_top = event.clientY - el.offsetTop + 5 // +5 чтобы не клинила мышка на картинке
     },
-    set_map_cell(x, y){
+    set_map_cell(x, y, a, o){
       if(this.pause_map){
         if (this.editor_mode == 1) { // редактирование контуров
           this.map_objects[x][y] = this.map_item_to_set
@@ -259,7 +259,9 @@ export default {
           {
             "room": 555,
             "goto_x": x,
-            "goto_y": y
+            "goto_y": y,
+            "action": a,
+             "object": o,
           }
         )
 
