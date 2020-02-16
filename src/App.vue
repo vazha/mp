@@ -2,7 +2,7 @@
    <div id="app3">
       <div draggable="true" @dragstart="drag_map_start($el, $event)" @dragover.prevent @dragend="drag_map_stop( $event)" @dragenter="dragenter($el,$event)"  @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px', width: div_width + 'px', height: div_height  + 'px'}" id="map" @click="set($el, $event)" class="map">
 
-        <img :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px'}">
+        <img @click="al(bot)" :title="bot[3]" :src="imag"  v-for="bot in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px', zIndex:'10000'}">
 
         <img draggable="true" @dragstart="dragStart($el, $event)" @dragover.prevent @dragend="drop(id, $event)" :title="obj.name" :src="domain + 'img/map/object/'+obj.file" @click="edit_map_obj(id)" v-for="(obj, id) in map_objects_data" v-bind:style="{zIndex: obj_zIndex, cursor: 'pointer', position:'absolute',display:'inline-block',left: obj.x * 0.01 * scale + left +'px', top: obj.y * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
 
@@ -171,6 +171,10 @@ export default {
     }
   },
   methods:{
+    al(bot){
+      //alert(bot[1])
+      set_map_cell(bot[0], bot[1])
+    },
     dragenter(el, event){
       //console.log(event)
       //this.left -= (this.drag_x - event.screenX)
