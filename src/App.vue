@@ -173,7 +173,7 @@ export default {
   methods:{
     al(bot){
       //alert(bot[1])
-      this.set_map_cell(bot[0], bot[1], 1, bot[2])
+      this.set_map_cell(bot[1], bot[0], 1, bot[2])
     },
     dragenter(el, event){
       //console.log(event)
