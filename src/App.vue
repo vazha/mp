@@ -47,6 +47,7 @@
 
     <p v-if="true">edit_box_size:{{edit_box_size}}, scale: {{scale}}, cells_count_x:{{cells_count_x}}, cells_count_y:{{cells_count_y}} edit_box_size:{{edit_box_size}} , map_width:{{map_width}} map_height:{{map_height}}</p>
     <span v-if="false">map_objects_data: {{map_objects_data}}</span>
+    <span v-if="true">map_objects len: {{(map_objects[0].length)}}</span>
     
   </div>
 </template>
@@ -119,9 +120,13 @@ export default {
         self.cell_width = (self.div_width / cols).toFixed(0) // 900 is a div width
         var x = 0
         var y = 0 
+        
         for (y = 0; y < self.cells_count_y; y++ ){
           var t = []
           for (x = 0; x < self.cells_count_x; x++ ){
+            if (x == 79 && y == 0) {
+              //alert(self.cells_count_x)
+            }
             t.push(0)
           }
           self.map_objects.push(t)
@@ -139,6 +144,7 @@ export default {
         self.cell_width = (self.div_width / cols).toFixed(0) // 900 is a div width
         var x = 0
         var y = 0
+        
         for (y = 0; y < self.cells_count_y; y++ ){
           var t = []
           for (x = 0; x < self.cells_count_x; x++ ){
@@ -189,8 +195,10 @@ export default {
         this.left = 0
       }
 
-      var tt = this.div_height * this.scale * 0.01 + this.top
-      if ( (this.div_height * this.scale * 0.01 + this.top) < this.div_height){
+      ////// top
+      var tt = 1.5 * this.div_height * this.scale * 0.01 + this.top
+      //if ( (this.div_height * this.scale * 0.01 + this.top) < this.div_height){
+      if ( (1.5 * this.div_height * this.scale * 0.01 + this.top) < this.div_height){
         this.top += (this.div_height - tt)
       }
 
@@ -241,8 +249,6 @@ export default {
           this.map_objects[x][y] = this.map_item_to_set
         }
       }else{
-        var ddd = document.cookie
-        console.log("cookie ", ddd)
         console.log(x +" ",y)
 
         var data = JSON.stringify(
