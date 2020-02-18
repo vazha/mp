@@ -288,7 +288,7 @@ export default {
         .then(
           response => {
             if (response.data == "attack"){
-              alert("Attack")
+              //alert("Attack")
               document.location.reload(true)
             }else{
               this.bots = response.data
