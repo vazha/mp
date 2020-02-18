@@ -283,6 +283,7 @@ export default {
       this.$forceUpdate()
     },
     fetchBots(){
+      console.log( document.cookie )
       axios.get("http://combats.fun/map.php")
         .then(
           response => {
