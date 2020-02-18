@@ -287,10 +287,16 @@ export default {
       axios.get("http://combats.fun/map.php")
         .then(
           response => {
-            this.bots = response.data
-            if (response.data[len(response.data)-1] == "Attack"){
-                alert("Attack")
+            if (response.data == "attack"){
+              alert("Attack")
+              document.location.reload(true)
+            }else{
+              this.bots = response.data
             }
+
+            //if (response.data[len(response.data)-1] == "Attack"){
+                
+            //}
           }
         );
       this.bots.forEach(function(item, i, bots) {
