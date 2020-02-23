@@ -64,7 +64,7 @@ export default {
             this.$emit("save_on_map", id)
         },
         fetchObjebts(){
-            axios.get("http://combats.fun/map_objects.php?map_objects=1")
+            axios.get("http://combats.ooo/map_objects.php?map_objects=1")
             .then(
                 response => {
                 //alert(response.data)

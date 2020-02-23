@@ -73,7 +73,7 @@ export default {
       temp_image_top: 0,
       editor_mode: "", // 1 - контурыб 2 - картинки
       obj_mode: 0, // 1 - добавление, 2 - редактирование
-      domain: "http://combats.fun/",
+      domain: "http://combats.ooo/",
       obj: {}, // объект прокидываемый на редактирование в map_objects.vue
       imag: imag,
       gm: gm1,
@@ -272,7 +272,7 @@ export default {
           }
         };
 
-        axios.post('http://combats.fun/map2.php', data, axiosConfig)
+        axios.post('http://combats.ooo/map2.php', data, axiosConfig)
         .then((response) => {
           console.log(response);
         })
@@ -284,7 +284,7 @@ export default {
     },
     fetchBots(){
       console.log( document.cookie )
-      axios.get("http://combats.fun/map.php")
+      axios.get("http://combats.ooo/map.php")
         .then(
           response => {
             if (response.data == "attack"){
@@ -305,14 +305,14 @@ export default {
     },
     fetchObjebts(){
       if (!this.pause_map){
-        axios.get("http://combats.fun/map3.php")
+        axios.get("http://combats.ooo/map3.php")
           .then(
             response => {
               this.map_objects = response.data
             // this.$forceUpdate()
             }
           );
-        axios.get("http://combats.fun/map_objects.php?map_objects_data=1")
+        axios.get("http://combats.ooo/map_objects.php?map_objects_data=1")
           .then(
             response => {
               this.map_objects_data = response.data
@@ -453,8 +453,8 @@ export default {
         }
       };
 
-      axios.post('http://combats.fun/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333"), data, axiosConfig)
-      //axios.post('http://combats.fun/map_objects.php', data, axiosConfig)
+      axios.post('http://combats.ooo/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333"), data, axiosConfig)
+      //axios.post('http://combats.ooo/map_objects.php', data, axiosConfig)
       .then((response) => {
         console.log(response);
       })
