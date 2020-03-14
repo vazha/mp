@@ -237,7 +237,7 @@ export default {
       this.obj = this.map_objects_data[id]
       this.obj["id"] = id // additional param for handle
       //alert(map_objects_data)
-      this.set_map_cell(obj.x, obj.y, 3, 0) // 2 mean enter to 
+      this.set_map_cell(10, 47, 3, 0) // 2 mean enter to 
     },
     editor_object_changed(el){
       this.temp_image_src = el[1]
