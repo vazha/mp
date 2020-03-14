@@ -167,6 +167,7 @@ export default {
       if (this.pause_map && this.editor_mode == 2){
         zIndex = 10
       }
+      zIndex = 10
       return zIndex
     }
   },
