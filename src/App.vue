@@ -4,7 +4,7 @@
 
         <img @click="al(bot)" :title="bot[3]" :src="imag" v-bind:key="k2" v-for="(bot, k2) in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px', zIndex:'10000'}">
 
-        <img draggable="true" @dragstart="dragStart($el, $event)" @dragover.prevent @dragend="drop(id, $event)" :title="obj.name" :src="domain + 'img/map/object/'+obj.file" @click="edit_map_obj(id)" v-for="(obj, id) in map_objects_data" v-bind:style="{zIndex: obj_zIndex, cursor: 'pointer', position:'absolute',display:'inline-block',left: obj.x * 0.01 * scale + left +'px', top: obj.y * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
+        <img draggable="true" @dragstart="dragStart($el, $event)" @dragover.prevent @dragend="drop(id, $event)" :title="obj.name" :src="domain + 'img/map/object/'+obj.file" @click="edit_map_obj(id, obj)" v-for="(obj, id) in map_objects_data" v-bind:style="{zIndex: obj_zIndex, cursor: 'pointer', position:'absolute',display:'inline-block',left: obj.x * 0.01 * scale + left +'px', top: obj.y * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
 
 
         <div v-for="(map_object, i) in map_objects" v-bind:key="i" class="egit_cells_row" v-bind:style="{left: left +'px', top: i * edit_box_size + top +'px', position:'absolute'}">
@@ -233,11 +233,11 @@ export default {
       this.obj = {}
       this.$forceUpdate()
     },
-    edit_map_obj(id){
+    edit_map_obj(id, obj){
       this.obj = this.map_objects_data[id]
       this.obj["id"] = id // additional param for handle
       //alert(map_objects_data)
-      this.set_map_cell(bot[1], bot[0], 3, 0) // 2 mean enter to 
+      this.set_map_cell(obj[1], obj[0], 3, 0) // 2 mean enter to 
     },
     editor_object_changed(el){
       this.temp_image_src = el[1]
