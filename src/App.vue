@@ -295,7 +295,7 @@ export default {
                     axios.get("https://combats.ooo/main.php?loc=5.180.0.414")
                     .then(
                       response => {
-
+                        document.location.reload(true)
                       }
                     );
               sleep(20000)
