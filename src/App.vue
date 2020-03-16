@@ -291,7 +291,13 @@ export default {
           response => {
             if (response.data == "attack" || response.data == "ch_room"){
               //alert("Attack")
-              document.location.reload(true)
+              //document.location.reload(true)
+                    axios.get("https://combats.ooo/main.php?loc=5.180.0.414")
+                    .then(
+                      response => {
+
+                      }
+                    );
               sleep(20000)
             }else{
               this.bots = response.data
