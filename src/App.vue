@@ -292,6 +292,7 @@ export default {
             if (response.data == "attack" || response.data == "ch_room"){
               //alert("Attack")
               document.location.reload(true)
+              sleep(2000)
             }else{
               this.bots = response.data
             }
