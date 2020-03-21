@@ -56,7 +56,7 @@
 import Prg from './Progress.vue';
 import Objects from './components/map_objects.vue';
 import imag from './assets/bot.png';
-import gm1 from './assets/4_2000.png';
+import gm1 from './assets/SE1.png'; //4_2000.png
 import gm2 from './assets/map2.jpg';
 import px1 from './assets/1px.png';
 import axios from 'axios';
@@ -109,7 +109,6 @@ export default {
 
     var img = new Image();
     var self = this;
-    console.log("image start!");
 
     img.onload = function() {
         self.map_width = this.width;
@@ -125,9 +124,6 @@ export default {
         for (y = 0; y < self.cells_count_y; y++ ){
           var t = []
           for (x = 0; x < self.cells_count_x; x++ ){
-            if (x == 79 && y == 0) {
-              //alert(self.cells_count_x)
-            }
             t.push(0)
           }
           self.map_objects.push(t)
@@ -136,25 +132,7 @@ export default {
     };
 
     img.onerror = function() {
-        //alert( "not a valid file: " + file.type);
-        self.map_width = 2000;
-        self.map_height = 2000;
-        var cols = (self.map_width / self.cell_width_init).toFixed(0) // total numbet of edit columns
-        self.cells_count_x = cols
-        var rows = (self.map_height / self.cell_width_init).toFixed(0) // total numbet of edit columns
-        self.cells_count_y = rows
-        self.cell_width = (self.div_width / cols).toFixed(0) // 900 is a div width
-        var x = 0
-        var y = 0
-        
-        for (y = 0; y < self.cells_count_y; y++ ){
-          var t = []
-          for (x = 0; x < self.cells_count_x; x++ ){
-            t.push(0)
-          }
-          self.map_objects.push(t)
-        }
-        console.log("image problem");
+        console.log("image load problem");
     };
 
     img.src = gm1
