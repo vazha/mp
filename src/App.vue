@@ -130,6 +130,7 @@ export default {
           }
           self.map_objects.push(t)
         }
+        console.log("image done!");
     };
 
     img.onerror = function() {
