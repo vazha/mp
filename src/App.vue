@@ -286,19 +286,19 @@ export default {
     },
     fetchBots(){
       console.log( document.cookie )
-      //axios.defaults.withCredentials = true
+      axios.defaults.withCredentials = true
       axios.get("https://combats.ooo/map.php", {withCredentials: true})
         .then(
           response => {
             if (response.data == "attack" || response.data == "ch_room"){
               //alert("Attack")
               //document.location.reload(true)
-                    //axios.defaults.withCredentials = true
+                    axios.defaults.withCredentials = true
                     axios.get("https://combats.ooo/main.php?loc=5.180.0.414", {withCredentials: true})
                     .then(
                       response => {
                         var now = new Date().getTime();
-                        while(new Date().getTime() < now + 1000){ /* do nothing */ }
+                        while(new Date().getTime() < now + 2000){ /* do nothing */ }
                         document.location.reload(true)
                       }
                     );
