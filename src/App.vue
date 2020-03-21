@@ -2,7 +2,7 @@
    <div id="app3">
       <div draggable="true" @dragstart="drag_map_start($el, $event)" @dragover.prevent @dragend="drag_map_stop( $event)" @dragenter="dragenter($el,$event)"  @mouseover="mouseOverMap($el, $event)" @mousewheel.capture="scrollFunction($event)" :style="{position:'relative', backgroundSize: scale + '%', backgroundPositionX: left + 'px', backgroundPositionY: top + 'px', width: div_width + 'px', height: div_height  + 'px'}" id="map" @click="set($el, $event)" class="map">
 
-        <img @click="al(bot)" :title="bot[3]" :src="imag" v-bind:key="k2" v-for="(bot, k2) in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px', zIndex:'10000'}">
+        <img @click="al(bot)" :title="bot[3]" :src="imag" v-for="(bot, k2) in bots" v-bind:style="{cursor: 'pointer', position:'absolute',display:'inline-block',left: bot[0] * edit_box_size + left +'px', top: bot[1] * edit_box_size + top + 'px', width: scale * 0.01 * 20 + 'px', zIndex:'10000'}">
 
         <img draggable="true" @dragstart="dragStart($el, $event)" @dragover.prevent @dragend="drop(id, $event)" :title="obj.name" :src="domain + 'img/map/object/'+obj.file" @click="edit_map_obj(id, obj)" v-for="(obj, id) in map_objects_data" v-bind:style="{zIndex: obj_zIndex, cursor: 'pointer', position:'absolute',display:'inline-block',left: obj.x * 0.01 * scale + left +'px', top: obj.y * 0.01 * scale + top + 'px', width: scale * 0.01 * 40 + 'px'}">
 
@@ -104,7 +104,7 @@ export default {
   mounted:function(){
     this.fetchBots();
     this.fetchObjebts();
-    this.timer = setInterval(this.fetchBots, 1000)
+    //this.timer = setInterval(this.fetchBots, 1000)
     //this.timer2 = setInterval(this.fetchObjebts, 10000)    
 
     var img = new Image();
@@ -269,10 +269,12 @@ export default {
         var axiosConfig = {
           headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
+              //'withCredentials': 'false'
             //'Access-Control-Allow-Origin':'*'
           }
         };
 
+        axios.defaults.withCredentials = false
         axios.post('https://combats.ooo/map2.php', data, axiosConfig)
         .then((response) => {
           console.log(response);
@@ -317,14 +319,14 @@ export default {
     },
     fetchObjebts(){
       if (!this.pause_map){
-        axios.get("https://combats.ooo/map3.php")
+        axios.get("https://combats.ooo/map3.php", {withCredentials: false})
           .then(
             response => {
               this.map_objects = response.data
             // this.$forceUpdate()
             }
           );
-        axios.get("https://combats.ooo/map_objects.php?map_objects_data=1")
+        axios.get("https://combats.ooo/map_objects.php?map_objects_data=1", {withCredentials: false})
           .then(
             response => {
               this.map_objects_data = response.data
@@ -465,7 +467,7 @@ export default {
         }
       };
 
-      axios.post('https://combats.ooo/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333"), data, axiosConfig)
+      axios.post('https://combats.ooo/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333", {withCredentials: false}), data, axiosConfig)
       //axios.post('https://combats.ooo/map_objects.php', data, axiosConfig)
       .then((response) => {
         console.log(response);
