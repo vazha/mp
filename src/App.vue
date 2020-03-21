@@ -109,6 +109,8 @@ export default {
 
     var img = new Image();
     var self = this;
+    console.log("image start!");
+
     img.onload = function() {
         self.map_width = this.width;
         self.map_height = this.height;
