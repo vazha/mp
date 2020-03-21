@@ -292,7 +292,7 @@ export default {
             if (response.data == "attack" || response.data == "ch_room"){
               //alert("Attack")
               //document.location.reload(true)
-                    axios.get("https://combats.ooo/main.php?loc=5.180.0.414")
+                    axios.get("https://combats.ooo/main.php?loc=5.180.0.414, {withCredentials: true}")
                     .then(
                       response => {
                         document.location.reload(true)
