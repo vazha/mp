@@ -300,7 +300,7 @@ export default {
                         document.location.reload(true)
                       }
                     );
-              sleep(20000)
+              //sleep(20000)
             }else{
               this.bots = response.data
             }
