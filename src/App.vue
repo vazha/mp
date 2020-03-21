@@ -104,7 +104,7 @@ export default {
   mounted:function(){
     this.fetchBots();
     this.fetchObjebts();
-    //this.timer = setInterval(this.fetchBots, 1000)
+    this.timer = setInterval(this.fetchBots, 1000)
     //this.timer2 = setInterval(this.fetchObjebts, 10000)    
 
     var img = new Image();
