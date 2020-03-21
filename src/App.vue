@@ -448,7 +448,7 @@ export default {
         }
       };
 
-      axios.post('https://combats.ooo/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333", {withCredentials: false}), data, axiosConfig)
+      axios.post('https://combats.ooo/map_objects.php'+ (mode == 1 ? "?map_pictures=111" : "?map_pictures=333"), data, axiosConfig)
       //axios.post('https://combats.ooo/map_objects.php', data, axiosConfig)
       .then((response) => {
         console.log(response);
