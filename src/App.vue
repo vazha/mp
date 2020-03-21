@@ -107,7 +107,6 @@ export default {
     this.timer = setInterval(this.fetchBots, 1000)
     //this.timer2 = setInterval(this.fetchObjebts, 10000)    
 
-
     var img = new Image();
     var self = this;
     img.onload = function() {
@@ -285,16 +284,16 @@ export default {
       this.$forceUpdate()
     },
     fetchBots(){
-      console.log( document.cookie )
+      //console.log( document.cookie )
       axios.defaults.withCredentials = true
-      axios.get("https://combats.ooo/map.php", {withCredentials: true})
+      axios.get("https://combats.ooo/map.php", {withCredentials: false})
         .then(
           response => {
             if (response.data == "attack" || response.data == "ch_room"){
               //alert("Attack")
               //document.location.reload(true)
                     axios.defaults.withCredentials = true
-                    axios.get("https://combats.ooo/main.php?loc=5.180.0.414", {withCredentials: true})
+                    axios.get("https://combats.ooo/main.php?loc=5.180.0.414", {withCredentials: false})
                     .then(
                       response => {
                         var now = new Date().getTime();
@@ -302,7 +301,6 @@ export default {
                         document.location.reload(true)
                       }
                     );
-              //sleep(20000)
             }else{
               this.bots = response.data
             }
@@ -312,6 +310,7 @@ export default {
             //}
           }
         );
+
       this.bots.forEach(function(item, i, bots) {
         //alert( "o" + bots[i][0]);
       });
