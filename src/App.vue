@@ -64,7 +64,7 @@ import axios from 'axios';
 export default {
   data () {
     return {
-      div_width: 900,
+      div_width: 1200, //
       div_height: 600,
       t_offset_left: 0,
       t_offset_top: 0,
