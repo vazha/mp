@@ -297,7 +297,7 @@ export default {
                     axios.get("https://combats.ooo/main.php?loc=5.180.0.414", {withCredentials: true})
                     .then(
                       response => {
-                        document.location.reload(true)
+                        //document.location.reload(true)
                       }
                     );
               //sleep(20000)
