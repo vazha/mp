@@ -441,6 +441,9 @@ export default {
         }
       )
 
+      //console.log(data)
+      //return
+
       var axiosConfig = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
